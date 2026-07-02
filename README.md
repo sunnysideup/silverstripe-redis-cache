@@ -2,11 +2,13 @@
 
 Enables usage of redis cache for SilverStripe.
 
+![status](https://github.com/pstaender/silverstripe-redis-cache/actions/workflows/ci.yml/badge.svg)
+
 ## Requirements
 
-  * SilverStripe 4.0.0 or higher
-  * PHP 5.6 or higher
+  * SilverStripe v4 / v5
   * Redis
+  * Tested on PHP 7.3+
 
 ## Pre-install
 
@@ -26,7 +28,7 @@ session.save_path     = {your_redis_url}
 Use composer to pull this module into your project:
 
 ```
-  $ composer require pstaender/silverstripe-redis-cache dev-master
+  $ composer require pstaender/silverstripe-redis-cache
 ```
 
 To enable Redis cache in your SilverStripe project, add one or both of the following yaml configs to your project under `/app/_config/` in either their own yaml file, or in an existing file such as `mysite.yml`.
@@ -54,27 +56,44 @@ SilverStripe\Core\Injector\Injector:
     constructor:
       client: '%$RedisClient'
   SilverStripe\Core\Cache\CacheFactory: '%$RedisCacheFactory'
+
+  # vendor/silverstripe/assets/_config/assetscache.yml
   Psr\SimpleCache\CacheInterface.InterventionBackend_Manipulations:
     factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.FileShortcodeProvider:
     factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.ImageShortcodeProvider:
     factory: RedisCacheFactory
+
+  # vendor/silverstripe/assets/_config/assetscache.yml
   Psr\SimpleCache\CacheInterface.Sha1FileHashingService:
     factory: RedisCacheFactory
+
+  # vendor/silverstripe/cms/_config/cache.yml
   Psr\SimpleCache\CacheInterface.CMSMain_SiteTreeHints:
     factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.SiteTree_CreatableChildren:
     factory: RedisCacheFactory
+  Psr\SimpleCache\CacheInterface.SiteTree_PageIcons:
+    factory: RedisCacheFactory
+
+  # vendor/silverstripe/cms/_config/permissions.yml +
+  # vendor/silverstripe/framework/_config/cache.yml
+  Psr\SimpleCache\CacheInterface.InheritedPermissions:
+    factory: RedisCacheFactory
+
+  # vendor/silverstripe/framework/_config/cache.yml
   Psr\SimpleCache\CacheInterface.cacheblock:
     factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.VersionProvider_composerlock:
     factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.RateLimiter:
     factory: RedisCacheFactory
-  Psr\SimpleCache\CacheInterface.InheritedPermissions:
-    factory: RedisCacheFactory
   Psr\SimpleCache\CacheInterface.ThemeResourceLoader:
+    factory: RedisCacheFactory
+  Psr\SimpleCache\CacheInterface.DatabaseAdapterRegistry:
+    factory: RedisCacheFactory
+  Psr\SimpleCache\CacheInterface.EmbedShortcodeProvider:
     factory: RedisCacheFactory
 ```
 
